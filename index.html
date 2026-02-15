@@ -1,228 +1,186 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>화이트데이 이벤트</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>화이트데이 이벤트</title>
 
-  <style>
-    /* ✅ 모바일에서 버튼/텍스트 자동 확대/기본 스타일로 "늘어나는" 현상 봉인 */
-    * { box-sizing: border-box; }
-    html { -webkit-text-size-adjust: 100%; }
-    button { -webkit-appearance: none; appearance: none; font: inherit; }
+<style>
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+button { -webkit-appearance: none; appearance: none; font: inherit; }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-      background-image:
-        linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
-        url("01.jpg");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+    url("01.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
-      font-family: 'Pretendard', system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-      overflow: hidden;
-      transition: background-image 0.5s ease;
-      touch-action: manipulation;
-      padding: 24px;
-    }
+  font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  overflow: hidden;
+  transition: background-image 0.5s ease;
+  padding: 24px;
+}
 
-    .card {
-      background: rgba(255,255,255,0.95);
-      padding: 34px 28px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-      max-width: 420px;
-      width: 100%;
-    }
+.card {
+  background: rgba(255,255,255,0.95);
+  padding: 32px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  max-width: 420px;
+  width: 100%;
+}
 
-    h1 {
-      font-size: 20px;
-      margin: 0 0 22px;
-      line-height: 1.6;
-    }
+h1 {
+  font-size: 20px;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
 
-    /* ✅ 버튼이 움직일 "영역" (이 안에서만 No가 도망) */
-    .btn-container {
-      position: relative;
-      width: 280px;
-      height: 56px;
-      margin: 0 auto;
-    }
+.btn-container {
+  position: relative;
+  width: 280px;
+  height: 56px;
+  margin: 0 auto;
+}
 
-    /* ✅ 버튼 크기 완전 고정 (min/max까지 잠금) */
-    .btn {
-      position: absolute;
-      top: 0;
+.btn {
+  position: absolute;
+  top: 0;
 
-      width: 120px;
-      min-width: 120px;
-      max-width: 120px;
+  width: 120px;
+  height: 48px;
+  min-width: 120px;
+  max-width: 120px;
+  min-height: 48px;
+  max-height: 48px;
 
-      height: 48px;
-      min-height: 48px;
-      max-height: 48px;
+  border-radius: 30px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  user-select: none;
+}
 
-      padding: 0;               /* ✅ padding 때문에 커지는 거 방지 */
-      line-height: 48px;        /* ✅ 텍스트 세로정렬 고정 */
-      border-radius: 30px;
-      border: 0;
+.btn:active { transform: scale(0.98); }
 
-      font-size: 16px;
-      font-weight: 600;
+.yes {
+  left: 0;
+  background: #ff4d6d;
+  color: white;
+  z-index: 2;
+}
 
-      cursor: pointer;
-      transition: transform 0.15s ease;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
+.no {
+  left: 160px;
+  background: #d6d6d6;
+  color: #111;
+  z-index: 1;
+}
 
-      display: block;           /* ✅ iOS 레이아웃 흔들림 방지 */
-      white-space: nowrap;      /* ✅ 줄바꿈 방지 */
-      overflow: hidden;
-    }
+.result {
+  margin-top: 18px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff4d6d;
+  display: none;
+}
 
-    .btn:active { transform: scale(0.98); }
+.heart {
+  position: fixed;
+  pointer-events: none;
+  animation: float 2.8s linear forwards;
+}
 
-    .yes {
-      left: 0;
-      background: #ff4d6d;
-      color: #fff;
-      z-index: 3;               /* ✅ Yes는 절대 가려지지 않게 */
-    }
-
-    .no {
-      left: 160px;              /* ✅ 시작 위치(오른쪽) */
-      background: #d6d6d6;
-      color: #111;
-      z-index: 2;
-    }
-
-    .result {
-      margin-top: 18px;
-      font-size: 20px;
-      font-weight: 800;
-      color: #ff4d6d;
-      display: none;
-    }
-
-    .hint {
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: 0.7;
-    }
-
-    .heart {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      animation: float 2.8s linear forwards;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-320px) scale(1.5); opacity: 0; }
-    }
-  </style>
+@keyframes float {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-300px); opacity: 0; }
+}
+</style>
 </head>
 
 <body>
-  <div class="card">
-    <h1>
-      발렌타인데이에는 못만났지만<br />
-      화이트데이에 같이 데이트 할래?
-    </h1>
 
-    <div class="btn-container" id="btnArea">
-      <button class="btn yes" id="yesBtn" type="button">Yes</button>
-      <button class="btn no" id="noBtn" type="button">No</button>
-    </div>
+<div class="card">
+  <h1>
+    여기 문구를<br>
+    수정해보실래요?
+  </h1>
 
-    <div class="result" id="result">❤️ 우리 화이트데이 데이트 확정 ❤️</div>
-    <div class="hint" id="hint">No는 잡을 수 없습니다 😏</div>
+  <div class="btn-container" id="btnArea">
+    <button class="btn yes" id="yesBtn" type="button">Yes</button>
+    <button class="btn no" id="noBtn" type="button">No</button>
   </div>
 
-  <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const btnArea = document.getElementById("btnArea");
-    const result = document.getElementById("result");
-    const hint = document.getElementById("hint");
+  <div class="result" id="result">
+    ❤️ 사랑꾼 댑악... ❤️
+  </div>
+</div>
 
-    // ✅ Yes 클릭: 배경 변경 + 결과 표시 + 하트
-    yesBtn.addEventListener("click", () => {
-      document.body.style.backgroundImage =
-        'linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url("02.jpg")';
-      result.style.display = "block";
-      hint.style.display = "none";
-      popHearts();
-    });
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const btnArea = document.getElementById("btnArea");
+const result = document.getElementById("result");
 
-    // ✅ 하트 효과
-    function popHearts() {
-      const emojis = ["❤️","💖","💝","✨","🎉"];
-      for (let i = 0; i < 24; i++) {
-        const h = document.createElement("div");
-        h.className = "heart";
-        h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        h.style.left = (Math.random() * window.innerWidth) + "px";
-        h.style.top  = (window.innerHeight - 10) + "px";
-        h.style.fontSize = (16 + Math.random() * 18) + "px";
-        document.body.appendChild(h);
-        setTimeout(() => h.remove(), 2800);
-      }
-    }
+yesBtn.addEventListener("click", () => {
+  document.body.style.backgroundImage =
+    'linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url("02.jpg")';
+  result.style.display = "block";
+  createHearts();
+});
 
-    // ✅ No 버튼 도망: 영역 안에서만 (크기 고정값 사용)
-    function moveNo() {
-      const w = 120;
-      const h = 48;
+function createHearts() {
+  for (let i = 0; i < 20; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = "❤️";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.top = window.innerHeight + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 2800);
+  }
+}
 
-      const maxX = Math.max(0, btnArea.clientWidth - w);
-      const maxY = Math.max(0, btnArea.clientHeight - h);
+function moveNo() {
+  const w = 120;
+  const h = 48;
 
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
+  const maxX = btnArea.clientWidth - w;
+  const maxY = btnArea.clientHeight - h;
 
-      noBtn.style.left = x + "px";
-      noBtn.style.top  = y + "px";
-    }
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
 
-    // ✅ PC: 갖다대면 도망
-    noBtn.addEventListener("mouseenter", moveNo);
+  noBtn.style.left = x + "px";
+  noBtn.style.top  = y + "px";
+}
 
-    // ✅ 모바일/PC 공통: 누르려는 순간 도망 (가장 안정적)
-    noBtn.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      moveNo();
-      tease();
-    }, { passive: false });
+noBtn.addEventListener("mouseenter", moveNo);
+noBtn.addEventListener("pointerdown", (e) => {
+  e.preventDefault();
+  moveNo();
+}, { passive: false });
+noBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  moveNo();
+});
 
-    // ✅ 클릭도 방지
-    noBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      moveNo();
-      tease();
-    });
+window.addEventListener("load", () => {
+  noBtn.style.left = "160px";
+  noBtn.style.top = "0px";
+});
+</script>
 
-    let cnt = 0;
-    function tease() {
-      cnt++;
-      if (cnt === 2) hint.textContent = "아니..? 진짜 누르려고 했어?🥺";
-      if (cnt === 4) hint.textContent = "No는 오늘 휴무입니다 😌";
-      if (cnt >= 6) hint.textContent = "그냥 Yes 누르면 돼 😏";
-    }
-
-    // ✅ 초기 위치 확정(겹침 방지)
-    window.addEventListener("load", () => {
-      noBtn.style.left = "160px";
-      noBtn.style.top  = "0px";
-    });
-  </script>
 </body>
 </html>
