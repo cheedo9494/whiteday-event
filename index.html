@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>화이트데이 이벤트</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* ✅ 기본 배경 (Yes 누르기 전) */
+  background-image:
+    linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+    url("01.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  font-family: 'Pretendard', sans-serif;
+  overflow: hidden;
+  transition: background 0.5s ease;
+}
+
+.card {
+  background: rgba(255,255,255,0.95);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  max-width: 400px;
+}
+
+h1 {
+  font-size: 20px;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+  height: 48px;
+}
+
+button {
+  padding: 12px 25px;
+  border-radius: 30px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.yes {
+  background-color: #ff4d6d;
+  color: white;
+}
+
+.yes:hover {
+  transform: scale(1.1);
+}
+
+.no {
+  background-color: #ccc;
+  position: absolute;
+  right: 0; /* 시작 위치 안정 */
+}
+
+.result {
+  margin-top: 25px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #ff4d6d;
+  display: none;
+}
+
+.heart {
+  position: absolute;
+  font-size: 20px;
+  animation: float 3s linear infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-300px) scale(1.5); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>
+    발렌타인데이에는 못만났지만<br>
+    화이트데이에 같이 데이트 할래?
+  </h1>
+
+  <div class="btn-container" id="btnArea">
+    <button class="yes" onclick="accept()">Yes</button>
+    <button class="no" id="noBtn">No</button>
+  </div>
+
+  <div class="result" id="result">
+    ❤️ 우리 화이트데이 데이트 확정 ❤️
+  </div>
+</div>
+
+<script>
+function accept() {
+
+  // ✅ 배경 변경
+  document.body.style.backgroundImage =
+    'linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url("02.jpg")';
+
+  document.getElementById("result").style.display = "block";
+  createHearts();
+}
+
+function createHearts() {
+  for (let i = 0; i < 25; i++) {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.top = window.innerHeight + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 3000);
+  }
+}
+
+// ✅ No 버튼 도망 (영역 안에서만)
+const noBtn = document.getElementById("noBtn");
+const btnArea = document.getElementById("btnArea");
+
+function moveNoButton() {
+  const rect = btnArea.getBoundingClientRect();
+  const bw = noBtn.offsetWidth;
+  const bh = noBtn.offsetHeight;
+
+  const maxX = rect.width - bw;
+  const maxY = rect.height - bh;
+
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  noBtn.style.left = `${x}px`;
+  noBtn.style.top = `${y}px`;
+}
+
+// PC
+noBtn.addEventListener("mouseenter", moveNoButton);
+
+// 모바일
+noBtn.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  moveNoButton();
+}, { passive: false });
+
+// 클릭 시도도 방지
+noBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  moveNoButton();
+});
+</script>
+
+</body>
+</html>
