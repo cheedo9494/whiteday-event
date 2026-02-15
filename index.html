@@ -1,178 +1,193 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>화이트데이 이벤트</title>
 
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  /* ✅ 기본 배경 (Yes 누르기 전) */
-  background-image:
-    linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
-    url("01.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+    /* ✅ 기본 배경 (Yes 누르기 전) */
+    background-image:
+      linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+      url("01.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
-  font-family: 'Pretendard', sans-serif;
-  overflow: hidden;
-  transition: background 0.5s ease;
-}
+    font-family: 'Pretendard', sans-serif;
+    overflow: hidden;
+    transition: background-image 0.5s ease;
+    touch-action: manipulation;
+  }
 
-.card {
-  background: rgba(255,255,255,0.95);
-  padding: 40px;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-  max-width: 400px;
-}
+  .card {
+    background: rgba(255,255,255,0.95);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    max-width: 400px;
+    width: calc(100% - 48px);
+  }
 
-h1 {
-  font-size: 20px;
-  margin-bottom: 30px;
-  line-height: 1.6;
-}
+  h1 {
+    font-size: 20px;
+    margin-bottom: 26px;
+    line-height: 1.6;
+  }
 
-.btn-container {
-  position: relative;
-  width: 260px;
-  height: 60px;
-  margin: 0 auto;
-}
+  /* ✅ 버튼 영역: 고정 크기 + 이 안에서만 No가 도망 */
+  .btn-container {
+    position: relative;
+    width: 280px;
+    height: 56px;
+    margin: 0 auto;
+  }
 
+  /* ✅ 버튼 크기 완전 고정(절대 늘어나지 않게) */
+  .btn {
+    position: absolute;
+    top: 0;
+    width: 120px;
+    height: 48px;
+    border-radius: 30px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
 
-button {
-  padding: 12px 25px;
-  border-radius: 30px;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 120px;   /* ✅ 이 줄 추가 */
-}
+  .btn:active { transform: scale(0.98); }
 
+  .yes {
+    left: 0;
+    background-color: #ff4d6d;
+    color: #fff;
+    z-index: 2; /* ✅ Yes는 항상 위 */
+  }
 
-.yes {
-  background-color: #ff4d6d;
-  color: white;
-  position: absolute;
-  left: 0;
-}
+  .yes:hover { transform: scale(1.06); }
 
+  .no {
+    left: 160px; /* ✅ 시작 위치(오른쪽) */
+    background-color: #d0d0d0;
+    color: #111;
+    z-index: 1;
+  }
 
-.yes:hover {
-  transform: scale(1.1);
-}
+  .result {
+    margin-top: 22px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #ff4d6d;
+    display: none;
+  }
 
-.no {
-  background-color: #ccc;
-  position: absolute;
-}
+  .heart {
+    position: fixed;
+    font-size: 20px;
+    animation: float 2.8s linear forwards;
+    pointer-events: none;
+    z-index: 9999;
+  }
 
-.result {
-  margin-top: 25px;
-  font-size: 22px;
-  font-weight: bold;
-  color: #ff4d6d;
-  display: none;
-}
-
-.heart {
-  position: absolute;
-  font-size: 20px;
-  animation: float 3s linear infinite;
-}
-
-@keyframes float {
-  0% { transform: translateY(0) scale(1); opacity: 1; }
-  100% { transform: translateY(-300px) scale(1.5); opacity: 0; }
-}
+  @keyframes float {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-320px) scale(1.5); opacity: 0; }
+  }
 </style>
 </head>
 
 <body>
+  <div class="card">
+    <h1>
+      발렌타인데이에는 못만났지만<br />
+      화이트데이에 같이 데이트 할래?
+    </h1>
 
-<div class="card">
-  <h1>
-    발렌타인데이에는 못만났지만<br>
-    화이트데이에 같이 데이트 할래?
-  </h1>
+    <div class="btn-container" id="btnArea">
+      <button class="btn yes" id="yesBtn">Yes</button>
+      <button class="btn no" id="noBtn">No</button>
+    </div>
 
-  <div class="btn-container" id="btnArea">
-    <button class="yes" onclick="accept()">Yes</button>
-    <button class="no" id="noBtn">No</button>
+    <div class="result" id="result">
+      ❤️ 우리 화이트데이 데이트 확정 ❤️
+    </div>
   </div>
-
-  <div class="result" id="result">
-    ❤️ 우리 화이트데이 데이트 확정 ❤️
-  </div>
-</div>
 
 <script>
-function accept() {
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn  = document.getElementById("noBtn");
+  const btnArea = document.getElementById("btnArea");
+  const result = document.getElementById("result");
 
-  // ✅ 배경 변경
-  document.body.style.backgroundImage =
-    'linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url("02.jpg")';
+  // ✅ Yes 클릭: 배경 변경 + 문구 + 하트
+  yesBtn.addEventListener("click", () => {
+    document.body.style.backgroundImage =
+      'linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url("02.jpg")';
 
-  document.getElementById("result").style.display = "block";
-  createHearts();
-}
+    result.style.display = "block";
+    createHearts();
+  });
 
-function createHearts() {
-  for (let i = 0; i < 25; i++) {
-    const heart = document.createElement("div");
-    heart.classList.add("heart");
-    heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.top = window.innerHeight + "px";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 3000);
+  // ✅ 하트 뿌리기
+  function createHearts() {
+    for (let i = 0; i < 22; i++) {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = "❤️";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.top = (window.innerHeight - 10) + "px";
+      heart.style.fontSize = (16 + Math.random() * 16) + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 2800);
+    }
   }
-}
 
-// ✅ No 버튼 도망 (영역 안에서만)
-const noBtn = document.getElementById("noBtn");
-const btnArea = document.getElementById("btnArea");
+  // ✅ No 버튼 도망 (영역 안에서만, 크기 고정)
+  function moveNoButton() {
+    const w = 120; // 버튼 고정 폭
+    const h = 48;  // 버튼 고정 높이
 
-function moveNoButton() {
-  const rect = btnArea.getBoundingClientRect();
-  const bw = noBtn.offsetWidth;
-  const bh = noBtn.offsetHeight;
+    const maxX = Math.max(0, btnArea.clientWidth - w);
+    const maxY = Math.max(0, btnArea.clientHeight - h);
 
-  const maxX = rect.width - bw;
-  const maxY = rect.height - bh;
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
 
-  const x = Math.random() * maxX;
-  const y = Math.random() * maxY;
+    noBtn.style.left = `${x}px`;
+    noBtn.style.top  = `${y}px`;
+  }
 
-  noBtn.style.left = `${x}px`;
-  noBtn.style.top = `${y}px`;
-}
+  // ✅ PC: 마우스 갖다대면 도망
+  noBtn.addEventListener("mouseenter", moveNoButton);
 
-// PC
-noBtn.addEventListener("mouseenter", moveNoButton);
+  // ✅ 모바일/PC 공통: 누르려는 순간 도망 (가장 안정적)
+  noBtn.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    moveNoButton();
+  }, { passive: false });
 
-// 모바일
-noBtn.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  moveNoButton();
-}, { passive: false });
+  // ✅ 혹시 클릭으로 잡힐까봐 클릭도 방지
+  noBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    moveNoButton();
+  });
 
-// 클릭 시도도 방지
-noBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  moveNoButton();
-});
+  // ✅ 첫 로딩 시 No 위치 확정(혹시 겹치면 안 되니까)
+  window.addEventListener("load", () => {
+    noBtn.style.left = "160px";
+    noBtn.style.top = "0px";
+  });
 </script>
-
 </body>
 </html>
